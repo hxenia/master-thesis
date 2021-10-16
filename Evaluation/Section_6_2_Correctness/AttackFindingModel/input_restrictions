@@ -1,0 +1,8 @@
+//Restrictions:
+//=============
+
+restriction validationCorrect:
+  "All v b #i. Correct(v, b)@i ==> v = b"
+
+restriction validationInCorrect:
+  "All v b #i. InCorrect(v, b)@i ==> not (v = b)"

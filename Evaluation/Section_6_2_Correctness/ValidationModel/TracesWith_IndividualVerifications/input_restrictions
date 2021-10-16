@@ -1,0 +1,66 @@
+//Restrictions:
+//=============
+
+//Restrictions to define the aggregation
+//--------------------------------------
+restriction Verification_Correctness_morePrecise: 
+  "All aggregation mAndPk #i. VerifyAgg(aggregation, mAndPk, false)@i
+    ==> ((Ex si nr thetaAgg mi ski thetaMPk.
+          VerifyAgg(agg(<si, nr>+thetaAgg), <mi, pk(ski), nr> + thetaMPk, false)@i
+	  & (not(si = sign(mi, ski)) | not(Ex #j. RegisterHonestKey(pk(ski))@j) ))
+        |(Ex si nr mi ski.
+          VerifyAgg(agg(<si, nr>), <mi, pk(ski), nr>, false)@i
+	& (not (si = sign(mi, ski)) | not(Ex #j. RegisterHonestKey(pk(ski))@j))))"
+
+restriction Verification_Secure:
+  "All si thetaAgg mi ski nr thetaMPk #i. 
+    VerifyAgg(agg(<si, nr>+thetaAgg), 
+         <mi, pk(ski), nr> + thetaMPk, true)@i 
+    ==> (not (Ex #j. RegisterHonestKey(pk(ski))@j)
+      | sign(mi, ski) = si)"
+
+restriction Consistency:
+  "All aggregation messagesAndKeys result1 result2 #t1 #t2.
+    VerifyAgg(aggregation, messagesAndKeys, result1)@t1 & VerifyAgg(aggregation, messagesAndKeys, result2)@t2
+  ==> result1 = result2"
+
+restriction OneSignaturePerMessageKeyPair:
+  "All aggregation mi ski nr thetaMPk #i. VerifyAgg(aggregation, <mi, pk(ski), nr> + thetaMPk, true)@i
+  ==> Ex si thetaAgg. VerifyAgg(agg(<si, nr>+thetaAgg), <mi, pk(ski), nr> + thetaMPk, true)@i"
+
+restriction OneMessageKeyPairPerSignature:
+  "All si thetaAgg nr messagesKeys #i. VerifyAgg(agg(<si, nr>+thetaAgg), messagesKeys, true)@i
+  ==> Ex mi ski thetaMPk. messagesKeys = <mi, pk(ski), nr> + thetaMPk" 
+
+//One Signature restrictions
+restriction Verification_Secure_OneSignature:
+  "All si mi ski nr #i. 
+    VerifyAgg(agg(<si, nr>), <mi, pk(ski), nr>, true)@i 
+      ==> (not (Ex #j. RegisterHonestKey(pk(ski))@j)
+        | sign(mi, ski) = si)"
+
+restriction OneSignaturePerMessageKeyPair_OneSignature:
+  "All aggregation mi ski nr #i. VerifyAgg(aggregation, <mi, pk(ski), nr>, true)@i
+  ==> Ex si. VerifyAgg(agg(<si, nr>), <mi, pk(ski), nr>, true)@i"
+
+restriction OneMessageKeyPairPerSignature_OneSignature:
+  "All si nr messagesKeys #i. VerifyAgg(agg(<si, nr>), messagesKeys, true)@i
+  ==> Ex mi ski. messagesKeys = <mi, pk(ski), nr>"
+
+//to ensure that the numbers are unique
+restriction NumbersSignatureUnique:
+  "not(Ex si sj nr theta messagesAndKeys #i.
+    VerifyAgg(agg(<si, nr>+<sj, nr>+theta), messagesAndKeys, true)@i)"
+
+restriction NumbersMessageUnique:
+  "not(Ex aggregation mi pki nr mj pkj theta #i.
+    VerifyAgg(aggregation, <mi, pki, nr>+<mj, pkj, nr>+theta, true)@i)"
+
+//case two signatures
+restriction NumbersSignatureUnique_TwoSignatures:
+  "not(Ex si sj nr messagesAndKeys #i.
+    VerifyAgg(agg(<si, nr>+<sj, nr>), messagesAndKeys, true)@i)"
+
+restriction NumbersMessageUnique_TwoSignatures:
+  "not(Ex aggregation mi pki nr mj pkj #i.
+    VerifyAgg(aggregation, <mi, pki, nr>+<mj, pkj, nr>, true)@i)"

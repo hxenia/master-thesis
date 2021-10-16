@@ -1,0 +1,17 @@
+theory testcases
+
+begin
+
+builtins: signing, multiset
+
+functions: agg/1 // a multiset of pair of signatures and numbers
+functions: false/0 //for the correctness definition
+
+// Public key infrastructure
+rule Register_pk:
+  [ Fr(~ltkA) ]
+--[ RegisterHonestKey(pk(~ltkA))
+  , Register($A, ~ltkA) ]->
+  [ !Ltk($A, ~ltkA)
+  , !Pk($A, pk(~ltkA))
+  ,  Out(pk(~ltkA)) ]

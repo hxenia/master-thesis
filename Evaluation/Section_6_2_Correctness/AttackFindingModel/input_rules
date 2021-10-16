@@ -1,0 +1,180 @@
+// Valid  
+rule OneValidSignature:
+  [ Fr(~m), !Ltk($A, ~sk) ]
+--[ Correct(verifyAgg(validAgg(~m, pk(~sk)), ~m, pk(~sk)), true),
+    OneValidSignature() ]->
+  [ ]
+  
+rule TwoValidSignatures:
+  [ Fr(~m1), Fr(~m2), !Ltk($A1, ~sk1), !Ltk($A2, ~sk2) ]
+--[ Correct(verifyAgg(validAgg(<~m1, ~m2>, <pk(~sk1), pk(~sk2)>), <~m1, ~m2>, <pk(~sk1), pk(~sk2)>), true),
+    TwoValidSignatures() ]->
+  [ ]
+
+rule ThreeValidSignatures:
+  [ Fr(~m1), Fr(~m2), Fr(~m3), !Ltk($A1, ~sk1), !Ltk($A2, ~sk2), !Ltk($A3, ~sk3) ]
+--[ Correct(verifyAgg(validAgg(<~m1, ~m2, ~m3>, <pk(~sk1), pk(~sk2), pk(~sk3)>),
+    <~m1, ~m2, ~m3>, <pk(~sk1), pk(~sk2), pk(~sk3)>), true),
+    ThreeValidSignatures() ]->
+  [ ]
+
+rule ThreeValidSignatures_twiceTheSameMessage:
+  [ Fr(~m1), Fr(~m2), !Ltk($A1, ~sk1), !Ltk($A2, ~sk2), !Ltk($A3, ~sk3) ]
+--[ Correct(verifyAgg(validAgg(<~m1, ~m2, ~m2>, <pk(~sk1), pk(~sk2), pk(~sk3)>),
+    <~m1, ~m2, ~m2>, <pk(~sk1), pk(~sk2), pk(~sk3)>), true),
+    ThreeValidSignatures_twiceTheSameMessage() ]->
+  [ ]
+
+rule ThreeValidSignatures_twiceTheSameKey:
+  [ Fr(~m1), Fr(~m2), Fr(~m3), !Ltk($A1, ~sk1), !Ltk($A2, ~sk2) ]
+--[ Correct(verifyAgg(validAgg(<~m1, ~m2, ~m3>, <pk(~sk1), pk(~sk2), pk(~sk2)>),
+    <~m1, ~m2, ~m3>, <pk(~sk1), pk(~sk2), pk(~sk2)>), true),
+    ThreeValidSignatures_twiceTheSameKey() ]->
+  [ ]
+
+rule ThreeValidSignatures_twiceTheSameSignature:
+  [ Fr(~m1), Fr(~m2), !Ltk($A1, ~sk1), !Ltk($A2, ~sk2) ]
+--[ Correct(verifyAgg(validAgg(<~m1, ~m2, ~m2>, <pk(~sk1), pk(~sk2), pk(~sk2)>),
+    <~m1, ~m2, ~m2>, <pk(~sk1), pk(~sk2), pk(~sk2)>), true),
+    ThreeValidSignatures_twiceTheSameSignature() ]->
+  [ ]
+
+rule SixSignatures:
+  [ Fr(~m1), Fr(~m2), Fr(~m3), Fr(~m4), Fr(~m5), Fr(~m6),
+    !Ltk($A1, ~sk1), !Ltk($A2, ~sk2), !Ltk($A3, ~sk3), !Ltk($A4, ~sk4), !Ltk($A5, ~sk5), !Ltk($A6, ~sk6) ]
+--[ Correct(verifyAgg(validAgg(<~m1, ~m2, ~m3, ~m4, ~m5, ~m6>
+        , <pk(~sk1), pk(~sk2), pk(~sk3), pk(~sk4), pk(~sk5), pk(~sk6)>),
+    <~m1, ~m2, ~m3, ~m4, ~m5, ~m6>,
+    <pk(~sk1), pk(~sk2), pk(~sk3), pk(~sk4), pk(~sk5), pk(~sk6)>), true),
+    SixSignatures() ]->
+  [ ]
+
+rule TwiceTheSameMessageAndKey:
+  [ Fr(~m), !Ltk($A, ~sk) ]
+--[ Correct(verifyAgg(validAgg(<~m, ~m>, <pk(~sk), pk(~sk)>),
+      <~m, ~m>, <pk(~sk), pk(~sk)>), true),
+      TwiceTheSameMessageAndKey() ]->
+  [ ]
+
+// Not Honest Keys, here treated as valid
+rule NotHonestKeys_correctSignature:
+  [ Fr(~m), Fr(~sk) ]
+--[ Correct(verifyAgg(validAgg(~m, pk(~sk)), ~m, pk(~sk)), true),
+    NotHonestKeys_correctSignature() ]->
+  [ ]
+
+
+// Invalid
+rule OneValidSignature_WrongMessage:
+  [ Fr(~m1), Fr(~m2), !Ltk($A, ~sk) ]
+--[ Correct(verifyAgg(validAgg(~m1, pk(~sk)), ~m2, pk(~sk)), true),
+    OneValidSignature_WrongMessage() ]->
+  [ ]
+
+rule OneValidSignature_WrongKey:
+  [ Fr(~m), !Ltk($A, ~sk1), !Ltk($A2, ~sk2) ]
+--[ Correct(verifyAgg(validAgg(~m, pk(~sk1)), ~m, pk(~sk2)), true),
+    NotEqual($A, $A2),
+    OneValidSignature_WrongKey() ]->
+  [ ]
+
+rule OneValidSignature_WrongMessageAndKey:
+  [ Fr(~m1), Fr(~m2), !Ltk($A, ~sk1), !Ltk($A2, ~sk2) ]
+--[ Correct(verifyAgg(validAgg(~m1, pk(~sk1)), ~m2, pk(~sk2)), true),
+    NotEqual($A, $A2),
+    OneValidSignature_WrongMessageAndKey() ]->
+  [ ]
+
+rule TwoValidSignatures_MessagesSwapped:
+  [ Fr(~m1), Fr(~m2), !Ltk($A1, ~sk1), !Ltk($A2, ~sk2) ]
+--[ Correct(verifyAgg(validAgg(<~m1, ~m2>, <pk(~sk1), pk(~sk2)>), <~m2, ~m1>, <pk(~sk1), pk(~sk2)>), true),
+    TwoValidSignatures_MessagesSwapped() ]->
+  [ ]
+
+rule TwoValidSignatures_OrderSwapped:
+  [ Fr(~m1), Fr(~m2), !Ltk($A1, ~sk1), !Ltk($A2, ~sk2) ]
+--[ Correct(verifyAgg(validAgg(<~m2, ~m1>, <pk(~sk2), pk(~sk1)>), <~m1, ~m2>, <pk(~sk1), pk(~sk2)>), true),
+    TwoValidSignatures_OrderSwapped() ]->
+  [ ]
+
+rule TwoValidSignatures_KeySwaped:
+  [ Fr(~m1), Fr(~m2), !Ltk($A1, ~sk1), !Ltk($A2, ~sk2) ]
+--[ Correct(verifyAgg(validAgg(<~m1, ~m2>, <pk(~sk1), pk(~sk2)>), <~m1, ~m2>, <pk(~sk2), pk(~sk1)>), true),
+    NotEqual(~sk1, ~sk2),
+    TwoValidSignatures_KeySwaped() ]->
+  [ ]
+
+rule NotHonestKeys_NonMatchingKey_verifyingHonest:
+  [ Fr(~m), Fr(~sk1),  !Ltk($A, sk2) ]
+--[ Correct(verifyAgg(validAgg(~m, pk(~sk1)), ~m, pk(sk2)), true),
+    NotHonestKeys_NonMatchingKey_verifyingHonest() ]->
+  [ ]
+
+
+
+
+// Wrong Format
+rule TooManyMessages:
+  [ Fr(~m1), Fr(~m2), Fr(~m3), !Ltk($A1, ~sk1), !Ltk($A2, ~sk2), !Ltk($A3, ~sk3) ]
+--[ Correct(verifyAgg(validAgg(<~m1, ~m2>, <pk(~sk1), pk(~sk2)>),
+      <~m1, ~m2, ~m3>, <pk(~sk1), pk(~sk2), pk(~sk3)>), true),
+    TooManyMessages() ]->
+  [ ]
+
+rule TooManySignatures:
+  [ Fr(~m1), Fr(~m2), Fr(~m3), !Ltk($A1, ~sk1), !Ltk($A2, ~sk2), !Ltk($A3, ~sk3) ]
+--[ Correct(verifyAgg(validAgg(<~m1, ~m2, ~m3>, <pk(~sk1), pk(~sk2), pk(~sk3)>),
+      <~m1, ~m2>, <pk(~sk1), pk(~sk2)>), true),
+    TooManySignatures() ]->
+  [ ]
+
+rule NoPublicKey:
+  [ Fr(~m), !Ltk($A, ~sk) ]
+--[ Correct(verifyAgg(validAgg(~m, pk(~sk)), ~m, ~sk), true),
+    NoPublicKey()]->
+  [ ]
+
+rule MissingAggFunction:
+  [ Fr(~m), !Ltk($A, ~sk) ]
+--[ Correct(verifyAgg(sign(~m, ~sk), ~m, pk(~sk)), true),
+    MissingAggFunction() ]->
+  [ ]
+
+rule TooManyMessages_OneTwice:
+  [ Fr(~m1), Fr(~m2), !Ltk($A1, ~sk1), !Ltk($A2, ~sk2) ]
+--[ Correct(verifyAgg(validAgg(<~m1, ~m2>, <pk(~sk1), pk(~sk2)>),
+      <~m1, ~m2, ~m2>, <pk(~sk1), pk(~sk2), pk(~sk2)>), true),
+    TooManyMessages_OneTwice() ]->
+  [ ]
+
+rule TooManySignatures_OneTwice:
+  [ Fr(~m1), Fr(~m2), !Ltk($A1, ~sk1), !Ltk($A2, ~sk2) ]
+--[ Correct(verifyAgg(validAgg(<~m1, ~m2, ~m2>, <pk(~sk1), pk(~sk2), pk(~sk2)>),
+      <~m1, ~m2>, <pk(~sk1), pk(~sk2)>), true),
+    TooManySignatures_OneTwice() ]->
+  [ ]
+
+
+// Not Honest Keys, correct format, here treated as invalid
+rule NotHonestKeys_NonMatchingMessage:
+  [ Fr(~m1), Fr(~m2),  Fr(~sk) ]
+--[ Correct(verifyAgg(validAgg(~m1, pk(~sk)), ~m2, pk(~sk)), true),
+    NotHonestKeys_NonMatchingMessage() ]->
+  [ ]
+
+rule NotHonestKeys_NonMatchingKey_BothNonHonest:
+  [ Fr(~m), Fr(~sk1),  Fr(~sk2) ]
+--[ Correct(verifyAgg(validAgg(~m, pk(~sk1)), ~m, pk(~sk2)), true),
+   NotHonestKeys_NonMatchingKey_BothNonHonest() ]->
+  [ ]
+
+rule NotHonestKeys_NonMatchingKey_signingHonest:
+  [ Fr(~m), !Ltk($A, sk1),  Fr(~sk2) ]
+--[ Correct(verifyAgg(validAgg(~m, pk(sk1)), ~m, pk(~sk2)), true),
+   NotHonestKeys_NonMatchingKey_signingHonest() ]->
+  [ ]
+
+
+
+// End
+

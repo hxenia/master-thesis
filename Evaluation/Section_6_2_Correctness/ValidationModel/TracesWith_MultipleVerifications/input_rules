@@ -1,0 +1,176 @@
+//Testcases
+
+rule TwiceTheSameCorrectAgg_sameResult_HonestPk_1:
+  [ Fr(~m), !Ltk($A, ~sk) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~m, pk(~sk), '1'>, true) ]-> 
+  [ TwiceTheSameCorrectAgg_sameResult_HonestPk_1(~m, ~sk) ]
+
+rule TwiceTheSameCorrectAgg_sameResult_HonestPk_2:
+  [ TwiceTheSameCorrectAgg_sameResult_HonestPk_1(~m, ~sk) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~m, pk(~sk), '1'>, true),
+    TwiceTheSameCorrectAgg_sameResult_HonestPk() ]-> 
+  [ ]
+#Lemma: trace exists
+
+rule TwiceTheSameCorrectAgg_differentResult_HonestPk_1:
+  [ Fr(~m), !Ltk($A, ~sk) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~m, pk(~sk), '1'>, true) ]-> 
+  [ TwiceTheSameCorrectAgg_differentResult_HonestPk_1(~m, ~sk) ]
+
+rule TwiceTheSameCorrectAgg_differentResult_HonestPk_2:
+  [ TwiceTheSameCorrectAgg_differentResult_HonestPk_1(~m, ~sk) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~m, pk(~sk), '1'>, false),
+    TwiceTheSameCorrectAgg_differentResult_HonestPk() ]-> 
+  [ ]
+#Lemma: no trace
+
+rule TwiceTheSameCorrectAgg_sameResult_NonHonestPk_1:
+  [ Fr(~m), Fr(~sk) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~m, pk(~sk), '1'>, true) ]-> 
+  [ TwiceTheSameCorrectAgg_sameResult_NonHonestPk_1(~m, ~sk) ]
+
+rule TwiceTheSameCorrectAgg_sameResult_NonHonestPk_2:
+  [ TwiceTheSameCorrectAgg_sameResult_NonHonestPk_1(~m, ~sk) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~m, pk(~sk), '1'>, true),
+    TwiceTheSameCorrectAgg_sameResult_NonHonestPk() ]-> 
+  [ ]
+#Lemma: trace exists
+
+rule TwiceTheSameCorrectAgg_differentResult_NonHonestPk_1:
+  [ Fr(~m), Fr(~sk) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~m, pk(~sk), '1'>, true) ]-> 
+  [ TwiceTheSameCorrectAgg_differentResult_NonHonestPk_1(~m, ~sk) ]
+
+rule TwiceTheSameCorrectAgg_differentResult_NonHonestPk_2:
+  [ TwiceTheSameCorrectAgg_differentResult_NonHonestPk_1(~m, ~sk) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~m, pk(~sk), '1'>, false),
+    TwiceTheSameCorrectAgg_differentResult_NonHonestPk() ]-> 
+  [ ]
+#Lemma: no trace
+
+
+
+
+rule TwiceTheSameIncorrectAgg_sameResult_HonestPk_1:
+  [ Fr(~m), Fr(~n), !Ltk($A, ~sk), Fr(~n) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~n, pk(~sk), '1'>, true) ]-> 
+  [ TwiceTheSameIncorrectAgg_sameResult_HonestPk_1(~m, ~sk, ~n) ]
+
+rule TwiceTheSameIncorrectAgg_sameResult_HonestPk_2:
+  [ TwiceTheSameIncorrectAgg_sameResult_HonestPk_1(~m, ~sk, ~n) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~n, pk(~sk), '1'>, true),
+    TwiceTheSameIncorrectAgg_sameResult_HonestPk() ]-> 
+  [ ]
+#Lemma: no trace
+
+rule TwiceTheSameIncorrectAgg_differentResult_HonestPk_1:
+  [ Fr(~m), !Ltk($A, ~sk), Fr(~n) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~n, pk(~sk), '1'>, true) ]-> 
+  [ TwiceTheSameIncorrectAgg_differentResult_HonestPk_1(~m, ~sk, ~n) ]
+
+rule TwiceTheSameIncorrectAgg_differentResult_HonestPk_2:
+  [ TwiceTheSameIncorrectAgg_differentResult_HonestPk_1(~m, ~sk, ~n) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~n, pk(~sk), '1'>, false),
+    TwiceTheSameIncorrectAgg_differentResult_HonestPk() ]-> 
+  [ ]
+#Lemma: no trace
+
+rule TwiceTheSameIncorrectAgg_sameResult_NonHonestPk_1:
+  [ Fr(~m), Fr(~sk), Fr(~n) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~n, pk(~sk), '1'>, true) ]-> 
+  [ TwiceTheSameIncorrectAgg_sameResult_NonHonestPk_1(~m, ~sk, ~n) ]
+
+rule TwiceTheSameIncorrectAgg_sameResult_NonHonestPk_2:
+  [ TwiceTheSameIncorrectAgg_sameResult_NonHonestPk_1(~m, ~sk, ~n) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~n, pk(~sk), '1'>, true),
+    TwiceTheSameIncorrectAgg_sameResult_NonHonestPk() ]-> 
+  [ ]
+#Lemma: trace exists
+
+rule TwiceTheSameIncorrectAgg_differentResult_NonHonestPk_1:
+  [ Fr(~m), Fr(~sk), Fr(~n) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~n, pk(~sk), '1'>, true) ]-> 
+  [ TwiceTheSameIncorrectAgg_differentResult_NonHonestPk_1(~m, ~sk, ~n) ]
+
+rule TwiceTheSameIncorrectAgg_differentResult_NonHonestPk_2:
+  [ TwiceTheSameIncorrectAgg_differentResult_NonHonestPk_1(~m, ~sk, ~n) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~n, pk(~sk), '1'>, false),
+    TwiceTheSameIncorrectAgg_differentResult_NonHonestPk() ]-> 
+  [ ]
+#Lemma: no trace
+
+
+
+rule DifferentMessage_sameResultTrue_HonestPk_1:
+  [ Fr(~m), !Ltk($A, ~sk), Fr(~n) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~m, pk(~sk), '1'>, true) ]-> 
+  [ DifferentMessage_sameResultTrue_HonestPk_1(~m, ~sk, ~n) ]
+
+rule DifferentMessage_sameResultTrue_HonestPk_2:
+  [ DifferentMessage_sameResultTrue_HonestPk_1(~m, ~sk, ~n) ]
+--[ VerifyAgg(agg(<sign(~n, ~sk), '1'>), <~n, pk(~sk), '1'>, true),
+    DifferentMessage_sameResultTrue_HonestPk() ]-> 
+  [ ]
+#Lemma: trace exists
+
+rule DifferentMessage_sameResultFalse_HonestPk_1:
+  [ Fr(~m), !Ltk($A, ~sk), Fr(~n) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~m, pk(~sk), '1'>, false) ]-> 
+  [ DifferentMessage_sameResultFalse_HonestPk_1(~m, ~sk, ~n) ]
+
+rule DifferentMessage_sameResultFalse_HonestPk_2:
+  [ DifferentMessage_sameResultTrue_HonestPk_1(~m, ~sk, ~n) ]
+--[ VerifyAgg(agg(<sign(~n, ~sk), '1'>), <~n, pk(~sk), '1'>, false),
+    DifferentMessage_sameResultFalse_HonestPk() ]-> 
+  [ ]
+#Lemma: no trace
+
+rule DifferentMessage_differentResult_HonestPk_1:
+  [ Fr(~m), !Ltk($A, ~sk), Fr(~n) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~m, pk(~sk), '1'>, false) ]-> 
+  [ DifferentMessage_differentResult_HonestPk_1(~m, ~sk, ~n) ]
+
+rule DifferentMessage_differentResult_HonestPk_2:
+  [ DifferentMessage_differentResult_HonestPk_1(~m, ~sk, ~n) ]
+--[ VerifyAgg(agg(<sign(~n, ~sk), '1'>), <~n, pk(~sk), '1'>, true),
+    DifferentMessage_differentResult_HonestPk() ]-> 
+  [ ]
+#Lemma: no trace
+
+
+rule DifferentMessage_sameResultTrue_NonHonestPk_1:
+  [ Fr(~m), Fr(~sk), Fr(~n) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~m, pk(~sk), '1'>, true) ]-> 
+  [ DifferentMessage_sameResultTrue_NonHonestPk_1(~m, ~sk, ~n) ]
+
+rule DifferentMessage_sameResultTrue_NonHonestPk_2:
+  [ DifferentMessage_sameResultTrue_NonHonestPk_1(~m, ~sk, ~n) ]
+--[ VerifyAgg(agg(<sign(~n, ~sk), '1'>), <~n, pk(~sk), '1'>, true),
+    DifferentMessage_sameResultTrue_NonHonestPk() ]-> 
+  [ ]
+#Lemma: trace exists
+
+rule DifferentMessage_sameResultFalse_NonHonestPk_1:
+  [ Fr(~m), Fr(~sk), Fr(~n) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~m, pk(~sk), '1'>, false) ]-> 
+  [ DifferentMessage_sameResultFalse_NonHonestPk_1(~m, ~sk, ~n) ]
+
+rule DifferentMessage_sameResultFalse_NonHonestPk_2:
+  [ DifferentMessage_sameResultTrue_NonHonestPk_1(~m, ~sk, ~n) ]
+--[ VerifyAgg(agg(<sign(~n, ~sk), '1'>), <~n, pk(~sk), '1'>, false),
+    DifferentMessage_sameResultFalse_NonHonestPk() ]-> 
+  [ ]
+#Lemma: trace exists
+
+rule DifferentMessage_differentResult_NonHonestPk_1:
+  [ Fr(~m), Fr(~sk), Fr(~n) ]
+--[ VerifyAgg(agg(<sign(~m, ~sk), '1'>), <~m, pk(~sk), '1'>, false) ]-> 
+  [ DifferentMessage_differentResult_NonHonestPk_1(~m, ~sk, ~n) ]
+
+rule DifferentMessage_differentResult_NonHonestPk_2:
+  [ DifferentMessage_differentResult_NonHonestPk_1(~m, ~sk, ~n) ]
+--[ VerifyAgg(agg(<sign(~n, ~sk), '1'>), <~n, pk(~sk), '1'>, true),
+    DifferentMessage_differentResult_NonHonestPk() ]-> 
+  [ ]
+#Lemma: trace exists
+// End

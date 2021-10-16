@@ -1,0 +1,65 @@
+theory AggregateSignature_NaiveEquationBasedApproach
+
+//Theory Description:
+//==================
+//Define verifyAgg recursively using equations
+//The precomputation does not terminate
+
+
+//Assumptions:
+//============
+//use the same key for all the signatures
+//no added adversary capabilities
+//public key in the aggregation amited
+
+
+//Non-Termination:
+//================
+//The precomputation of this theory does not terminate
+//sRest in the first equation could contain arrbitrary many signatures.
+//Tamarins precomputation will compute infiniely many instantiations of rule B_send
+//This recursive approach does not work.
+
+begin
+
+builtins: signing
+
+functions: agg/1, verifyAgg/3
+equations: verifyAgg(agg(<sign(m1, sk),sRest>)
+               , <m1, mRest>, <pk(sk), pkRest> ) 
+         = verifyAgg(agg(sRest), mRest, pkRest)
+equations: verifyAgg(agg(sign(m, sk)), m, pk(sk)) = true
+
+
+// Public key infrastructure
+rule Register_pk:
+  [ Fr(~ltkA) ]
+-->
+  [ !Ltk($A, ~ltkA), !Pk($A, pk(~ltkA)),  Out(pk(~ltkA)) ]
+
+
+/* The following "Protocol" should demonstrate, that the aggregation works:
+   A -> B: m1, m2, sign-agg(sign(m1, pk1), sign(m2, pk2))
+*/
+
+//Protocol
+rule A_send:
+  [ !Ltk($A, ~skA1), !Ltk($A, ~skA2), Fr(~m1), Fr(~m2) ]
+-->
+  [ Out(<~m1, ~m2, agg(<sign(~m1, ~skA1), sign(~m2, ~skA2)>)>) ] //A signs and aggregates m1 and m2 in one steps
+
+rule B_send:
+  [ In(<m1, m2, agg>), !Pk($A, pkA1), !Pk($A, pkA2) ]
+--[ Finish(), Correct(verifyAgg(agg, <m1, m2>, <pkA1, pkA2>), true) ]->
+  [ ]
+
+
+//Lemmas
+
+//There exista a trace where B receives a correct signature aggregation
+lemma correctly_executable:
+ exists-trace
+  "Ex #i. Finish()@i &
+  Ex v b. Correct(v, b)@i & v = b"
+
+end
